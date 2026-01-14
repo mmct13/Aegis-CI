@@ -1,4 +1,13 @@
 repos:
+  - repo: local
+    hooks:
+      - id: banner
+        name: Aegis-CI Banner
+        entry: python scripts/banner.py
+        language: python
+        verbose: true
+        always_run: true
+
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.1
     hooks:

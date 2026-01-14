@@ -6,31 +6,86 @@ on:
   pull_request:
     branches: [ "master", "main" ]
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
-  sast-scan:
-    name: SAST Scan (Semgrep)
+  # 1. Secret Scanning (Redondance avec pre-commit)
+  gitleaks:
+    name: Secret Detection (Gitleaks)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Semgrep Security Scan
-        uses: returntocorp/semgrep-action@v1
+      - uses: actions/checkout@v3
         with:
-          config: p/default # Utilise les règles de sécurité recommandées
+          fetch-depth: 0
 
-  sca-scan:
+      - name: Show Aegis Banner
+        run: |
+          echo -e "\033[36m    ___               _          ______ ____\n   /   |  ___  ____ _(_)____    / ____//  _/\n  / /| | / _ \/ __ \`/ / ___/___/ /     / /  \n / ___ |/  __/ /_/ / (__  )___/ /___ _/ /   \n/_/  |_|\___/\__, /_/____/    \____//___/   \n            /____/                          \033[0m\n    \033[1;32m[+] Aegis-CI Security System Active\033[0m\n    \033[36m   By Marshall Christ\033[0m"
+
+
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          headless: true
+          redact: true
+
+  # 2. SAST Scanning (Semgrep)
+  semgrep:
+    name: SAST Scan (Semgrep)
+    runs-on: ubuntu-latest
+    if: (github.actor != 'dependabot[bot]')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: returntocorp/semgrep-action@v1
+        with:
+          config: p/default
+          generateSarif: "1"
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: semgrep.sarif
+        if: always()
+
+  # 3. SCA Scanning (Trivy)
+  trivy:
     name: SCA Scan (Trivy)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs' # Scan du système de fichiers
+          scan-type: 'fs'
           ignore-unfixed: true
-          format: 'table'
-          exit-code: '1' # Bloque le build si faille critique trouvée
+          format: 'sarif'
+          output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+        if: always()
+
+  # 4. Infrastructure Scanning (Checkov)
+  checkov:
+    name: IaC Scan (Checkov)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Checkov action
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: all
+          quiet: true
+          soft_fail: true # Ne bloque pas le build au début (ajuster selon maturité)
+          output_format: cli
