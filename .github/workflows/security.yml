@@ -1,0 +1,36 @@
+name: Security Pipeline
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  sast-scan:
+    name: SAST Scan (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Semgrep Security Scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: p/default # Utilise les règles de sécurité recommandées
+
+  sca-scan:
+    name: SCA Scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs' # Scan du système de fichiers
+          ignore-unfixed: true
+          format: 'table'
+          exit-code: '1' # Bloque le build si faille critique trouvée
+          severity: 'CRITICAL,HIGH'
