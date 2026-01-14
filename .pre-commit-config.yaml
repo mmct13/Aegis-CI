@@ -1,0 +1,14 @@
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.1
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0  # Bibliothèque standard de hooks
+    hooks:
+      - id: check-yaml        # Vérifie la syntaxe YAML
+      - id: check-json        # Vérifie la syntaxe JSON
+      - id: end-of-file-fixer # Ajoute une ligne vide à la fin (bonne pratique Linux)
+      - id: trailing-whitespace # Supprime les espaces inutiles en fin de ligne
+      - id: check-added-large-files # Empêche de commiter des fichiers géants accidentellement
