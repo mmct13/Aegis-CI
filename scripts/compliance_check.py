@@ -19,7 +19,7 @@ def run_safety_check():
         # La version gratuite (old) supporte --json.
         # Si safety n'est pas installé, ça va lever une exception.
         result = subprocess.run(
-            ['safety', 'check', '-r', 'requirements.txt', '--json'], 
+            [sys.executable, '-m', 'safety', 'check', '-r', 'requirements.txt', '--json'], 
             capture_output=True, 
             text=True
         )

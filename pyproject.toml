@@ -1,0 +1,30 @@
+[project]
+name = "aegis-ci"
+version = "0.1.0"
+description = "Aegis-CI: Banking Grade DevSecOps Framework"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Marshall Christ"}
+]
+dependencies = [
+    "fpdf2>=2.7.0",
+    "pre-commit>=3.0.0",
+    "safety>=2.3.0",
+    "gitleaks>=3.0.0"  # Note: gitleaks is often a binary, but keeping it here for visibility if wrapper exists or strictly as ref
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["scripts"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]

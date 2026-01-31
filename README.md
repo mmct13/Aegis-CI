@@ -5,78 +5,80 @@
  / ___ |/  __/ /_/ / (__  )___/ /___ _/ /
 /_/  |_|\___/\__, /_/____/   /______/___/
 ```
-> **By Marshall Christ**
 
-# Aegis-CI
+> **Aegis-CI**: The Banking-Grade DevSecOps Framework.
+> *Protecting Financial Data at the Source.*
 
-**Aegis-CI** est un template de projet **DevSecOps** conçu pour intégrer la sécurité dès le début du cycle de développement (*Shift-Left Security*). Il fournit une configuration prête à l'emploi pour valider la qualité du code et détecter les vulnérabilités avant même qu'elles n'atteignent la production.
+![CI Status](https://img.shields.io/github/actions/workflow/status/mmct13/Aegis-CI/security.yml?style=for-the-badge)
+![Python Version](https://img.shields.io/badge/python-3.8%2B-blue?style=for-the-badge)
+![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
+![Compliance](https://img.shields.io/badge/compliance-PCI--DSS-gold?style=for-the-badge)
 
-## 🚀 Fonctionnalités
+## 🛡️ Presentation
 
-### 🔒 Contrôles Locaux (Pre-commit)
-Avant chaque commit, des hooks git vérifient automatiquement :
-- **Absence de secrets** (clés API, mots de passe) via `gitleaks`.
-- **Validité syntaxique** des fichiers YAML et JSON.
-- **Propreté du code** (suppression des espaces inutiles, fin de fichiers correctes).
-- **Taille des fichiers** pour éviter les commits de binaires volumineux.
+**Aegis-CI** is a modular security framework designed to integrate seamlessly into CI/CD pipelines. It acts as a shield, preventing sensitive banking data leaks (PAN, IBAN) and critical software vulnerabilities from ever reaching production.
 
-### 🤖 Pipeline CI/CD (GitHub Actions)
-À chaque push ou Pull Request, une pipeline de sécurité analyse le code :
-- **SAST (Semgrep)** : Analyse statique pour détecter les failles de sécurité et bugs logiques.
-- **SCA (Trivy)** : Scan des vulnérabilités dans les dépendances et fichiers de configuration.
-- **Détéction de Secrets (Gitleaks)** : Vérification de l'historique git complet.
-- **IaC Scanning (Checkov)** : Audit de sécurité pour Terraform, Docker, Kubernetes.
+Built for high-security environments (Banking/Finance), it ensures **Continuous Compliance** with strict security standards like PCI-DSS.
 
-## 🛠️ Pré-requis
+### 🚀 Key Features
 
-- [Python 3.x](https://www.python.org/downloads/)
-- [Git](https://git-scm.com/)
+*   **💳 Banking DLP (Data Loss Prevention)**: 
+    *   Algorithmic detection (Luhn) of Credit Card Numbers (PAN).
+    *   Blocks commits containing sensitive data in any file format.
+*   **👮 Compliance Gatekeeper**:
+    *   **SCA**: Dependency scanning (`safety`) against known CVEs.
+    *   **Zero-Trust**: Blocks deployments with critical vulnerabilities.
+*   **📊 Executive Reporting (BSIC Standard)**:
+    *   Generates professional PDF security certificates.
+    *   **BSIC Branded**: Official colors and logo integration for board-level reporting.
+*   **🔒 Standard Hygiene**:
+    *   Secret detection (API Keys, Tokens) via `gitleaks`.
+    *   Code quality & linting enforcement.
 
-## 📦 Installation
+## 🛠️ Installation & Usage
 
-1. **Cloner le projet**
-   ```bash
-   git clone https://github.com/mmct13/Aegis-CI.git
-   cd Aegis-CI
-   ```
+### Prerequisites
+*   Python 3.8+
+*   Git
 
-2. **Installer Pre-commit**
-   ```bash
-   pip install pre-commit
-   ```
+### Quick Start (For Developers)
 
-3. **Activer les hooks**
-   ```bash
-   pre-commit install
-   ```
-   *Désormais, les vérifications se lanceront à chaque `git commit`.*
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/mmct13/Aegis-CI.git
+    cd Aegis-CI
+    ```
 
-## 🤝 Intégration dans d'autres projets
+2.  **Install Dependencies**
+    ```bash
+    pip install .
+    # Or for development:
+    pip install -r requirements.txt
+    ```
 
-Vous voulez utiliser cette sécurité sur vos autres repos ?
-👉 **Lisez le [Guide d'Intégration](INTEGRATION_GUIDE.md)** pour savoir comment l'installer sur un projet existant ou l'utiliser comme template.
+3.  **Run Tests**
+    ```bash
+    pytest
+    ```
 
-## ⚙️ Utilisation
+4.  **Generate a Report**
+    ```bash
+    python scripts/reporter.py
+    ```
+    *This will generate `aegis_report.pdf` in the current directory.*
 
-### Lancer les vérifications manuellement
-Pour scanner tous les fichiers sans attendre un commit :
-```bash
-pre-commit run --all-files
-```
+## 🤝 Integration
 
-### Ignorer une vérification (Déconseillé ⚠️)
-En cas d'urgence absolue, vous pouvez bypasser les hooks (à utiliser avec précaution) :
-```bash
-git commit -m "Message" --no-verify
-```
+To use Aegis-CI in **your** project (as a security layer), please refer to the [Integration Guide](INTEGRATION_GUIDE.md).
 
-## 📄 Structure du Projet
+## 📄 Documentation
 
-```
-Aegis-CI/
-├── .github/
-│   └── workflows/
-│       └── security.yml    # Pipeline CI/CD de sécurité
-├── .pre-commit-config.yaml # Configuration des hooks locaux
-└── README.md               # Documentation
-```
+*   **[Full Guide (GUIDE.md)](GUIDE.md)**: Detailed instructions on architecture and extending the framework.
+*   **[Integration Guide](INTEGRATION_GUIDE.md)**: How to add Aegis-CI to existing repositories.
+
+## 👨‍💻 Contributing
+
+We welcome contributions! Please see `CONTRIBUTING.md` (coming soon) for details.
+
+---
+*Built with ❤️ for Secure Banking.*

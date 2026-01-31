@@ -8,6 +8,28 @@ repos:
         verbose: true
         always_run: true
 
+      - id: dlp-check
+        name: Aegis DLP Scanner
+        entry: python scripts/dlp_check.py
+        language: python
+        types: [text]
+        exclude: ^scripts/|README.md|SCENARIOS.md  # Exclure les scripts eux-mêmes et la doc
+
+      - id: compliance-check
+        name: Aegis Compliance Gatekeeper
+        entry: python scripts/compliance_check.py
+        language: python
+        pass_filenames: false
+        always_run: true
+
+      - id: reporter
+        name: Aegis PDF Reporter
+        entry: python scripts/reporter.py
+        language: python
+        pass_filenames: false
+        always_run: true
+        verbose: true
+
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.1
     hooks:
